@@ -1,28 +1,35 @@
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+
 class Solution
 {
 public:
-    string customSortString(string order, string s)
+    ListNode *removeZeroSumSublists(ListNode *head)
     {
-        map<char, int> mp;
-        string ans = "";
-        for (int i = 0; i < s.size(); i++)
-            mp[s[i]]++;
+        ListNode node = ListNode(0, head);
+        unordered_map<int, ListNode *> mp; // or use map
+        int prefix = 0;
 
-        for (int i = 0; i < order.size(); i++)
+        mp[0] = head;
+        for (ListNode *ptr = &node; ptr; ptr = ptr->next)
         {
-            if (mp.find(order[i]) != mp.end())
-            {
-                for (int j = 0; j < mp[order[i]]; j++)
-                    ans.push_back(order[i]);
-                mp.erase(order[i]);
-            }
+            prefix += (ptr->val);
+            mp[prefix] = ptr;
         }
-
-        for (auto x : mp)
+        prefix = 0; // reset
+        for (ListNode *ptr = &node; ptr; ptr = ptr->next)
         {
-            for (int j = 0; j < x.second; j++)
-                ans.push_back(x.first);
+            prefix += (ptr->val);
+            ptr->next = mp[prefix]->next;
         }
-        return ans;
+        return node.next;
     }
 };
